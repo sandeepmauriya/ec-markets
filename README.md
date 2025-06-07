@@ -1,10 +1,9 @@
 # EC Markets
 
 A React Native application built with Expo for market analysis and visualization.
-
-![App Screenshot 1](./assets/first.png)
-![App Screenshot 2](./assets/second.png)
 ![App Screenshot 3](./assets/third.png)
+![App Screenshot 2](./assets/second.png)
+
 
 ## Prerequisites
 
