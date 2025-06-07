@@ -4,14 +4,28 @@ import { LineChart } from 'react-native-chart-kit';
 import { ChartCardProps } from './ChartCard.types';
 import { colors, spacing } from '../../tokens';
 
-const LEGEND_COLORS: Record<string, string> = {
-  Open: '#2D3BFF',
-  Close: '#F36CB4',
-  Low: '#A3A3A3',
-  High: '#3EE6B6',
-};
+interface ChartCardDrillProps extends ChartCardProps {
+  selectedYear: number | null;
+  onYearLabelClick: (year: number) => void;
+}
 
-const ChartCard: React.FC<ChartCardProps> = ({ data, loading }) => {
+const ChartCard: React.FC<ChartCardDrillProps> = ({ data, loading, selectedYear, onYearLabelClick }) => {
+  // Handler for data point click
+  const handleDataPointClick = (dataPoint: any) => {
+    if (!selectedYear && data.labels && data.labels.length === 4) {
+      // Only allow drill-down when not zoomed in and 4-year view
+      const label = data.labels[dataPoint.index];
+      if (label) {
+        // Parse year from label (format: dd/mm/yyyy)
+        const parts = label.split('/');
+        const year = parseInt(parts[2], 10);
+        if (!isNaN(year)) {
+          onYearLabelClick(year);
+        }
+      }
+    }
+  };
+
   return (
     <View style={styles.chartCard}>
       {loading ? (
@@ -28,11 +42,11 @@ const ChartCard: React.FC<ChartCardProps> = ({ data, loading }) => {
             backgroundGradientFrom: '#f5f5fa',
             backgroundGradientTo: '#f5f5fa',
             decimalPlaces: 2,
-            color: () => '#2D3BFF',
+            color: () => '#f5f5fa',
             labelColor: () => '#222222',
             propsForDots: {
-              r: '4',
-              strokeWidth: '2',
+              r: '0',
+              strokeWidth: '0',
               stroke: '#fff',
             },
             propsForBackgroundLines: {
@@ -45,6 +59,7 @@ const ChartCard: React.FC<ChartCardProps> = ({ data, loading }) => {
           }}
           bezier
           style={{ borderRadius: 20, marginTop: 8 }}
+          onDataPointClick={handleDataPointClick}
         />
       )}
     </View>
@@ -63,30 +78,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
-  },
-  legendRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: 8,
-    marginLeft: 8,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 24,
-  },
-  legendDot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    marginRight: 6,
-  },
-  legendLabel: {
-    fontSize: 16,
-    color: '#222',
-    fontWeight: '500',
   },
 });
 

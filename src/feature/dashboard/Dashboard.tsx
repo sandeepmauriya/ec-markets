@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Dimensions, Text } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, TouchableOpacity } from 'react-native';
 import Header from '../../components/Header/Header';
 import Checkbox from '../../components/Checkbox/Checkbox';
 import ChartCard from '../../components/ChartCard/ChartCard';
@@ -22,7 +22,7 @@ type DisplayState = Record<StockKey, boolean>;
 const Dashboard: React.FC = () => {
   const [stockData, setStockData] = useState<StockData[]>([]);
   const [display, setDisplay] = useState<DisplayState>({ open: true, high: false, low: false, close: true });
-  const [zoomed, setZoomed] = useState(false);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -33,13 +33,59 @@ const Dashboard: React.FC = () => {
     setStockData(data);
   };
 
-  // Prepare chart data based on toggles and Figma order
-  const labels = stockData.map(item => new Date(parseInt(item.timestamp) * 1000).toLocaleDateString('en-GB'));
+  // Prepare all labels and years
+  const allLabels = stockData.map(item => new Date(parseInt(item.timestamp) * 1000).toLocaleDateString('en-GB'));
+  const allYears = stockData.map(item => new Date(parseInt(item.timestamp) * 1000).getFullYear());
+
+  // Step for 4 points
+  const step = stockData.length >= 4 ? Math.floor((stockData.length - 1) / 3) : 1;
+
+  // Pick 4 evenly spaced years for the x-axis
+  let yearLabels: string[] = [];
+  let yearValues: number[] = [];
+  if (allLabels.length >= 4) {
+    yearLabels = [
+      allLabels[0],
+      allLabels[step],
+      allLabels[step * 2],
+      allLabels[allLabels.length - 1]
+    ];
+    yearValues = [
+      allYears[0],
+      allYears[step],
+      allYears[step * 2],
+      allYears[allYears.length - 1]
+    ];
+  } else {
+    yearLabels = allLabels;
+    yearValues = allYears;
+  }
+
+  // Filter data for selected year or show only 4 points
+  let filteredData: StockData[] = [];
+  let labels: string[] = [];
+  if (selectedYear) {
+    filteredData = stockData
+      .filter(item => new Date(parseInt(item.timestamp) * 1000).getFullYear() === selectedYear)
+      .sort((a, b) => parseInt(a.timestamp) - parseInt(b.timestamp));
+    filteredData = filteredData.slice(-4); // latest 4 months
+    labels = filteredData.map(item => new Date(parseInt(item.timestamp) * 1000).toLocaleDateString('en-GB'));
+  } else {
+    filteredData = [
+      stockData[0],
+      stockData[step],
+      stockData[step * 2],
+      stockData[stockData.length - 1]
+    ].filter(Boolean);
+    labels = yearLabels;
+  }
+
+  // Prepare datasets
   const datasets = [];
   for (const key of LEGEND_ORDER) {
     if (display[key]) {
       datasets.push({
-        data: stockData.map(item => item[key]),
+        data: filteredData.map(item => item[key]),
         color: () => COLORS[key],
         strokeWidth: 2,
         label: key.charAt(0).toUpperCase() + key.slice(1),
@@ -47,14 +93,10 @@ const Dashboard: React.FC = () => {
     }
   }
 
-  // Zoom logic: show only last 7 days if zoomed
-  const chartLabels = zoomed ? labels.slice(-7) : labels;
-  const chartDatasets = datasets.map(ds => ({ ...ds, data: zoomed ? ds.data.slice(-7) : ds.data }));
-
   const chartData = {
-    labels: chartLabels.filter((_, i) => i % Math.ceil(chartLabels.length / 5) === 0),
-    datasets: chartDatasets,
-    legend: chartDatasets.map(ds => ds.label),
+    labels,
+    datasets,
+    legend: datasets.map(ds => ds.label),
   };
 
   // Checkbox color logic to match Figma
@@ -68,7 +110,7 @@ const Dashboard: React.FC = () => {
   return (
     <View style={styles.screen}>
       <Header />
-      <ChartCard data={chartData} loading={stockData.length === 0} />
+      <ChartCard data={chartData} loading={stockData.length === 0} selectedYear={selectedYear} onYearLabelClick={year => setSelectedYear(year)} />
       <View style={styles.controlsRow}>
         <View>
           <Text style={styles.displayLabel}>Display</Text>
@@ -82,7 +124,7 @@ const Dashboard: React.FC = () => {
             />
           ))}
         </View>
-        <Button onPress={() => setZoomed(false)} variant="primary">Reset Zoom</Button>
+        <Button onPress={() => setSelectedYear(null)} disabled={!selectedYear}>Reset Zoom</Button>
       </View>
       <StatusBar style="auto" />
     </View>
@@ -107,6 +149,23 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#222',
     fontSize: 17,
+  },
+  yearLabelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: Dimensions.get('window').width - 48,
+    marginBottom: 8,
+    marginTop: -12,
+  },
+  yearLabelTouchable: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  yearLabel: {
+    color: '#222',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 });
 
