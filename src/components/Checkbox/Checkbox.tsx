@@ -1,14 +1,13 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { CheckboxProps } from './Checkbox.types';
-import { colors, spacing } from '../../tokens';
 
 const Checkbox: React.FC<CheckboxProps> = ({ label, checked, color, onPress }) => (
-  <TouchableOpacity style={styles.checkboxRow} onPress={onPress}>
-    <View style={[styles.checkbox, { borderColor: color, backgroundColor: checked ? color : colors.background }]}> 
-      {checked && <View style={styles.checkboxTick} />}
+  <TouchableOpacity style={styles.checkboxRow} onPress={onPress} activeOpacity={0.7}>
+    <View style={[styles.checkbox, { borderColor: color }]}> 
+      {checked && <View style={[styles.checkboxTick, { backgroundColor: color }]} />}
     </View>
-    <Text style={{ color: colors.text, marginLeft: spacing.sm }}>{label}</Text>
+    <Text style={styles.label}>{label}</Text>
   </TouchableOpacity>
 );
 
@@ -16,22 +15,27 @@ const styles = StyleSheet.create({
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: 12,
   },
   checkbox: {
-    width: 20,
-    height: 20,
-    borderWidth: 2,
-    borderRadius: 4,
+    width: 22,
+    height: 22,
+    borderWidth: 3,
+    borderRadius: 6,
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 2,
+    marginRight: 10,
   },
   checkboxTick: {
-    width: 10,
-    height: 10,
-    backgroundColor: colors.textInverse,
-    borderRadius: 2,
+    width: 12,
+    height: 12,
+    borderRadius: 3,
+  },
+  label: {
+    color: '#222',
+    fontSize: 16,
+    fontWeight: '400',
   },
 });
 

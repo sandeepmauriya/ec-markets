@@ -1,30 +1,32 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, spacing } from '../../tokens';
-import AppleLogo from '../AppleLogo';
+import AppleLogo from '../AppleLogo/AppleLogo';
 
-const Header: React.FC = () => (
-  <View style={styles.header}>
-    <AppleLogo/>
-    <Text style={styles.headerTitle}>AAPL Market Data</Text>
-  </View>
-);
+const Header: React.FC = () => {
+  return (
+    <View style={styles.header}>
+      <AppleLogo size={40} />
+      <Text style={styles.title}>AAPL Market Data</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingTop: 32,
+    paddingBottom: 16,
   },
-  logo: {
-    width: 32,
-    height: 32,
-    marginRight: spacing.sm,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text,
+  title: {
+    fontSize: 32,
+    lineHeight:48,
+    fontWeight:400,
+    letterSpacing:0,
+    fontFamily:'Actor',
+    marginLeft: 16,
   },
 });
 
