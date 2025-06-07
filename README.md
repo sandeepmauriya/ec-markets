@@ -2,6 +2,10 @@
 
 A React Native application built with Expo for market analysis and visualization.
 
+![App Screenshot 1](./assets/first.png)
+![App Screenshot 2](./assets/second.png)
+![App Screenshot 3](./assets/third.png)
+
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
