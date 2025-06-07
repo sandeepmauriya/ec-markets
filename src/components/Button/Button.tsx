@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { ButtonProps } from './Button.types';
+import { colors, spacing } from '../../tokens';
 
 const Button: React.FC<ButtonProps> = ({ children, onPress, disabled = false, style }) => {
   return (
@@ -21,19 +22,19 @@ const Button: React.FC<ButtonProps> = ({ children, onPress, disabled = false, st
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#222',
-    borderRadius: 24,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+    backgroundColor: colors.primary,
+    borderRadius: spacing.buttonRadius,
+    paddingHorizontal: spacing.xl + 8,
+    paddingVertical: spacing.md + 2,
     alignSelf: 'flex-end',
-    marginTop: 8,
+    marginTop: spacing.md,
     minWidth: 120,
   },
   disabled: {
     opacity: 0.5,
   },
   text: {
-    color: '#fff',
+    color: colors.textInverse,
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',

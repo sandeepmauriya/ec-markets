@@ -1,19 +1,18 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { CheckboxProps } from './Checkbox.types';
-
-const BLUE = '#2D3BFF';
+import { colors, spacing } from '../../tokens';
 
 const Checkbox: React.FC<CheckboxProps> = ({ label, checked, onPress }) => (
   <TouchableOpacity style={styles.checkboxRow} onPress={onPress} activeOpacity={0.7}>
     <View style={[styles.checkbox, {
-      borderColor: BLUE,
-      backgroundColor: checked ? BLUE : '#fff',
+      borderColor: colors.accent,
+      backgroundColor: checked ? colors.accent : colors.background,
     }]}
     >
       {checked && (
         <View style={styles.innerBoxWrapper}>
-          <View style={[styles.innerBox, { backgroundColor: BLUE }]}
+          <View style={[styles.innerBox, { backgroundColor: colors.accent }]}
           >
             <View style={styles.checkmarkWrapper}>
               <View style={styles.checkmarkArrow} />
@@ -30,16 +29,16 @@ const styles = StyleSheet.create({
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: spacing.lg,
   },
   checkbox: {
     width: 22,
     height: 22,
     borderWidth: 3,
-    borderRadius: 6,
+    borderRadius: spacing.sm,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: spacing.md,
   },
   innerBoxWrapper: {
     justifyContent: 'center',
@@ -50,7 +49,7 @@ const styles = StyleSheet.create({
   innerBox: {
     width: 12,
     height: 12,
-    borderRadius: 3,
+    borderRadius: spacing.xs,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -65,12 +64,12 @@ const styles = StyleSheet.create({
     height: 4.5,
     borderLeftWidth: 1.2,
     borderBottomWidth: 1.2,
-    borderColor: '#fff',
+    borderColor: colors.textInverse,
     transform: [{ rotate: '-45deg' }],
     borderStyle: 'solid',
   },
   label: {
-    color: '#222',
+    color: colors.text,
     fontSize: 16,
     fontWeight: '400',
   },
