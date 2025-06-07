@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { colors, spacing } from '../../tokens';
+import AppleLogo from '../AppleLogo';
 
 const Header: React.FC = () => (
   <View style={styles.header}>
-    <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg' }} style={styles.logo} />
+    <AppleLogo/>
     <Text style={styles.headerTitle}>AAPL Market Data</Text>
   </View>
 );
